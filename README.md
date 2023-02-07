@@ -1,2 +1,2 @@
-# SQL
-SQL Portfolio
+# PostGreSQL
+PostGreSQL Portfolio
