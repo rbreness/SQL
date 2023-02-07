@@ -1,0 +1,93 @@
+#1Return customer IDs of customers who have spent at least $110 with the staff member who has an ID  of 3
+SELECT customer_id,SUM(amount) FROM payment
+WHERE staff_id NOT IN (1)
+GROUP BY customer_id
+HAVING SUM(amount) >= 110
+
+#2 How many members begin with the letter J?
+SELECT COUNT (*) FROM members
+WHERE name LIKE 'J%'
+
+#3 What customer has the highest customer ID number whose name starts with an ‘E’ and has the address ID lower than 500?
+SELECT * FROM customer
+WHERE first_name LIKE 'E%'AND address_id <= 500
+ORDER BY customer_id DESC
+LIMIT 1
+
+#4 List of all of the facilities and their cost to members
+SELECT name,membercost FROM cd.facilities
+
+#5 List of facilities that charge a fee to members
+SELECT * FROM cd.facilities
+WHERE membercost > 0
+
+#6 List of facilities that charge a fee to members, and that fee is less than 1/50th of the monthly maintenance cost
+SELECT facid,name,membercost,monthlymaintenance FROM cd.facilities
+WHERE membercost > 0 AND membercost < (monthlymaintenance/50)
+
+#7 List of all facilities with a branch in 'California'
+SELECT * FROM cd.facilities
+WHERE name LIKE '%California%'
+
+#8 View details of facilities with ID 1 and 5?
+SELECT * FROM cd.facilities
+WHERE facid IN ('1', '5')
+
+#9 List of members who joined after the start of September 2022
+SELECT memid,surname,firstname,joindate FROM cd.members
+WHERE joindate >= '2022-09-01'
+
+#10 Ordered list of the first 10 surnames in the members table
+SELECT MAX(joindate) AS latest_signup FROM cd.members;
+
+#11 Signup date of your last member
+SELECT joindate FROM cd.members
+ORDER BY joindate DESC
+LIMIT 1
+
+#12 Count of the number of facilities that have a cost to guests of 10 or more
+SELECT COUNT (*) FROM cd.facilities
+WHERE guestcost >=10
+
+#13 List of the total number of slots booked per facility in the month of September 2022. (Table consisting of facility id and slots, sorted by the number of slots.)
+SELECT facid, SUM(slots) AS “Table Slots”
+FROM cd.bookings
+WHERE starttime >= '2022-09-01' AND starttime < '2022-10-01' 
+GROUP BY facid ORDER BY SUM(slots);
+
+#14 List of facilities with more than 1000 slots booked. (Table consisting of facility id and total slots, sorted by facility id)
+SELECT facid, SUM(slots) AS total_slots 
+FROM cd.bookings
+GROUP BY facid 
+HAVING SUM(slots) >1000 
+ORDER BY facid ASC
+
+#15 List of the start times for bookings for the Greenleaf Branches, for the date '2022-09-21'? (Table consisting of start time and facility name pairings, ordered by the time)
+SELECT cd.bookings.starttime AS start, cd.facilities.name 
+AS name 
+FROM cd.facilities 
+INNER JOIN cd.bookings
+ON cd.facilities.facid = cd.bookings.facid 
+WHERE cd.facilities.facid IN (0,1) 
+AND cd.bookings.starttime >= '2022-09-21' 
+AND cd.bookings.starttime < '2022-09-22' 
+ORDER BY cd.bookings.starttime;
+
+*or*
+
+SELECT starttime,name FROM cd.bookings
+INNER JOIN cd.facilities
+ON cd.bookings.facid = cd.facilities.facid
+WHERE starttime BETWEEN '2022-09-21' AND '2022-09-22'
+AND name LIKE 'Greenleaf Branch%'
+
+#16 List of the start times for bookings by members named 'David Farrell'
+SELECT bookings.starttime FROM cd.bookings
+JOIN cd.members
+ON cd.bookings.memid = cd.members.memid
+WHERE firstname LIKE 'David' AND surname LIKE 'Farrell'
+
+
+
+
+
